@@ -95,6 +95,45 @@ export function registerPipelineTools(server: McpServer, provider: IConnectionPr
   );
 
   server.registerTool(
+    "list_variable_groups",
+    {
+      description: "List variable groups (Pipelines > Library) with their variables. Values of secret variables are never returned.",
+      annotations: { readOnlyHint: true, idempotentHint: true, destructiveHint: false, openWorldHint: false },
+      inputSchema: {
+        name: z
+          .string()
+          .optional()
+          .describe("Filter by group name (supports * wildcard)"),
+        includeValues: z
+          .boolean()
+          .optional()
+          .describe("Include values of non-secret variables (default true); set false to return names only"),
+        top: topParam(50),
+      },
+    },
+    ({ name, includeValues, top }) =>
+      withErrorHandling(async () => {
+        const { api, project } = await provider.getTaskAgentContext();
+
+        const groups = await api.getVariableGroups(project, name, undefined, top);
+
+        const result = (groups || []).map((group) => ({
+          id: group.id,
+          name: group.name,
+          type: group.type,
+          description: group.description,
+          variables: Object.entries(group.variables ?? {}).map(([key, v]) => ({
+            name: key,
+            isSecret: !!v.isSecret,
+            ...(!v.isSecret && includeValues !== false ? { value: v.value } : {}),
+          })),
+        }));
+
+        return jsonResponse(result);
+      })
+  );
+
+  server.registerTool(
     "queue_build",
     {
       description: "Queue (trigger) a build pipeline. WARNING: This is a WRITE operation that consumes agent time and may trigger downstream side effects (deploys, notifications). Show the user the definition ID, branch, and parameters before calling, and ask for confirmation. Tip: pass dryRun: true first to preview the exact payload before queueing.",

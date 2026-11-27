@@ -2,6 +2,7 @@ import type { IWorkItemTrackingApi } from "azure-devops-node-api/WorkItemTrackin
 import type { IGitApi } from "azure-devops-node-api/GitApi.js";
 import type { IBuildApi } from "azure-devops-node-api/BuildApi.js";
 import type { IReleaseApi } from "azure-devops-node-api/ReleaseApi.js";
+import type { ITaskAgentApi } from "azure-devops-node-api/TaskAgentApi.js";
 import type { ITfvcApi } from "azure-devops-node-api/TfvcApi.js";
 import type { ITestApi } from "azure-devops-node-api/TestApi.js";
 import type { ITestPlanApi } from "azure-devops-node-api/TestPlanApi.js";
@@ -30,6 +31,11 @@ export interface BuildContext {
 
 export interface ReleaseContext {
   api: IReleaseApi;
+  project: string;
+}
+
+export interface TaskAgentContext {
+  api: ITaskAgentApi;
   project: string;
 }
 
