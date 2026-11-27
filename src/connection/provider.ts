@@ -6,6 +6,7 @@ import type {
   TfvcContext,
   BuildContext,
   ReleaseContext,
+  TaskAgentContext,
   TestContext,
   TestPlanContext,
   WikiContext,
@@ -23,6 +24,7 @@ export interface IConnectionProvider {
   getTfvcContext(): Promise<TfvcContext>;
   getBuildContext(): Promise<BuildContext>;
   getReleaseContext(): Promise<ReleaseContext>;
+  getTaskAgentContext(): Promise<TaskAgentContext>;
   getTestContext(): Promise<TestContext>;
   getTestPlanContext(): Promise<TestPlanContext>;
   getWikiContext(): Promise<WikiContext>;
@@ -79,6 +81,13 @@ export class AzureDevOpsConnectionProvider implements IConnectionProvider {
   async getReleaseContext(): Promise<ReleaseContext> {
     return {
       api: await this.getConnection().getReleaseApi(),
+      project: this.config.project,
+    };
+  }
+
+  async getTaskAgentContext(): Promise<TaskAgentContext> {
+    return {
+      api: await this.getConnection().getTaskAgentApi(),
       project: this.config.project,
     };
   }

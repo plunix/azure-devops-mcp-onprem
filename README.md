@@ -428,6 +428,7 @@ Restart the client. All 48 tools appear in the tool picker. Server name is auto-
 | Tool | Description | Key Parameters |
 |------|-------------|----------------|
 | `list_build_definitions` | List pipeline definitions | `name`, `top` |
+| `list_variable_groups` | List Library variable groups and variable names (secrets masked) | `name`, `includeValues`, `top` |
 | `queue_build` | Trigger a build | `definitionId`, `sourceBranch`, `parameters` |
 | `get_build` | Get build status | `buildId` |
 | `list_builds` | List recent builds | `definitionId`, `status`, `top` |
